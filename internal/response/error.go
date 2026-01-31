@@ -1,4 +1,4 @@
-package book
+package response
 
 type CustomError struct {
 	err        error

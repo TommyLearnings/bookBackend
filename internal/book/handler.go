@@ -1,10 +1,23 @@
 package book
 
 import (
+	"context"
+	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/TommyLearning/bookBackend/internal/logger"
+	"github.com/TommyLearning/bookBackend/internal/response"
+	"github.com/google/uuid"
 )
+
+type Storer interface {
+	Create(context.Context, *Record) (*Record, error)
+	FindById(context.Context, uuid.UUID) (*Record, error)
+	FindAll(context.Context) ([]*Record, error)
+	UpdateById(context.Context, uuid.UUID, *Record) error
+	DeleteById(context.Context, uuid.UUID) error
+}
 
 type Handler struct {
 	store Storer
@@ -18,34 +31,34 @@ func Save(ns Storer) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		log := logger.FromContext(ctx)
-		log.Info("post news")
+		log.Info("post bi100")
 
-		//var requestBody NewsPostReqBody
-		//if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
-		//	log.Error("failed to decode request body", "error", err)
-		//	w.WriteHeader(http.StatusBadRequest)
-		//	return
-		//}
-		//
-		//n, err := requestBody.Validate()
-		//if err != nil {
-		//	log.Error("failed to validate request body", "error", err)
-		//	w.WriteHeader(http.StatusBadRequest)
-		//	w.Write([]byte(err.Error()))
-		//	return
-		//}
-		//
-		//if _, err := ns.Create(ctx, n); err != nil {
-		//	log.Error("failed to create news", "error", err)
-		//	var dbErr *news.CustomError
-		//	if errors.As(err, &dbErr) {
-		//		w.WriteHeader(dbErr.HttpStatusCode())
-		//		return
-		//	}
-		//
-		//	w.WriteHeader(http.StatusInternalServerError)
-		//	return
-		//}
+		var requestBody SaveRequestBody
+		if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+			log.Error("failed to decode request body", "error", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		n, err := requestBody.Validate()
+		if err != nil {
+			log.Error("failed to validate request body", "error", err)
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		if _, err := ns.Create(ctx, n); err != nil {
+			log.Error("failed to create bi100", "error", err)
+			var dbErr *response.CustomError
+			if errors.As(err, &dbErr) {
+				w.WriteHeader(dbErr.HttpStatusCode())
+				return
+			}
+
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 		w.WriteHeader(http.StatusCreated)
 	}
 }

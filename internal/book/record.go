@@ -8,15 +8,23 @@ import (
 )
 
 type Record struct {
-	bun.BaseModel `bun:"table:news"`
-	Id            uuid.UUID `bun:"id,pk,type:uuid,default:uuid_generate_v4()"`
-	Author        string    `bun:"author,nullzero,notnull"`
-	Title         string    `bun:"title,nullzero,notnull"`
-	Summary       string    `bun:"summary,nullzero,notnull"`
-	Content       string    `bun:"content,nullzero,notnull"`
-	Source        string    `bun:"source,nullzero,notnull"`
-	Tags          []string  `bun:"tags,nullzero,notnull,array"`
-	CreatedAt     time.Time `bun:"created_at,nullzero,notnull,default:current_timestamp"`
-	UpdatedAt     time.Time `bun:"updated_at,nullzero,notnull,default:current_timestamp"`
-	DeletedAt     time.Time `bun:"deleted_at,nullzero,soft_delete"`
+	bun.BaseModel `bun:"table:bi100"`
+
+	// 基礎欄位
+	Id          int64     `bun:"id,pk,autoincrement"`
+	ReferenceId uuid.UUID `bun:"reference_id,notnull,unique,default:uuid_generate_v4()"`
+
+	Version       int64     `bun:"version,default:0"`
+	CreatedBy     int64     `bun:"created_by,notnull"`      // 假設儲存 User ID
+	LastUpdatedBy int64     `bun:"last_updated_by,notnull"` // 假設儲存 User ID
+	CreatedAt     time.Time `bun:"date_created,nullzero,notnull,default:current_timestamp"`
+	UpdatedAt     time.Time `bun:"last_updated,nullzero,notnull,default:current_timestamp"`
+
+	Isbn        string    `bun:"isbn,notnull,unique"`
+	Title       string    `bun:"title,notnull"`
+	Episode     string    `bun:"episode"`
+	Author      string    `bun:"author"`
+	PublishDate time.Time `bun:"publish_date"`
+	Description string    `bun:"description"`
+	ImageUrl    string    `bun:"image_url"`
 }
