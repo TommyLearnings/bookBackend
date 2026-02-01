@@ -11,7 +11,7 @@ type Record struct {
 	bun.BaseModel `bun:"table:bi100"`
 
 	// 基礎欄位
-	Id          int64     `bun:"id,pk,autoincrement"`
+	Id          int       `bun:"id,pk,autoincrement"`
 	ReferenceId uuid.UUID `bun:"reference_id,notnull,unique,default:uuid_generate_v4()"`
 
 	Version       int64     `bun:"version,default:0"`

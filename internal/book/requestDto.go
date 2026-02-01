@@ -9,7 +9,7 @@ import (
 )
 
 type SaveRequestBody struct {
-	Id          int64     `json:"id"`
+	Id          int       `json:"id"`
 	ReferenceId uuid.UUID `json:"referenceId"`
 
 	// 系統/版本欄位

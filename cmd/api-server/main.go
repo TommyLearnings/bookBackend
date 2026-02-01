@@ -12,27 +12,28 @@ import (
 
 	"github.com/TommyLearning/bookBackend/internal/book"
 	"github.com/TommyLearning/bookBackend/internal/logger"
+	"github.com/TommyLearning/bookBackend/internal/postgres"
 	"github.com/TommyLearning/bookBackend/internal/router"
 	"golang.org/x/sync/errgroup"
 )
 
 func main() {
 
-	log := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{AddSource: true}))
-	//db, err := postgres.NewDB(&postgres.Config{
-	//	Host:     os.Getenv("DATABASE_HOST"),
-	//	DBName:   os.Getenv("DATABASE_NAME"),
-	//	Password: os.Getenv("DATABASE_PASSWORD"),
-	//	User:     os.Getenv("DATABASE_USER"),
-	//	Port:     os.Getenv("DATABASE_PORT"),
-	//	SSLMode:  "disable",
-	//})
-	//if err != nil {
-	//	log.Error("failed to connect to db", "error", err)
-	//	os.Exit(1)
-	//}
+	log := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{}))
+	db, err := postgres.NewDB(&postgres.Config{
+		Host:     "192.168.0.27",
+		DBName:   "tommyDb",
+		Password: "1QAZ@wsx3EDC",
+		User:     "TommyDbMaintainer",
+		Port:     "9000",
+		SSLMode:  "disable",
+	})
+	if err != nil {
+		log.Error("failed to connect to db", "error", err)
+		os.Exit(1)
+	}
 
-	bookStore := book.NewStore(nil)
+	bookStore := book.NewStore(db)
 	bookHandler := book.NewHandler(bookStore)
 
 	// 組裝路由
